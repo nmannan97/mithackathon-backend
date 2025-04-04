@@ -1,0 +1,44 @@
+adminUser: admin
+adminPassword: password
+admin: {}
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+    - name: Prometheus
+      uid: "PBFA97CFB590B2094"
+      type: prometheus
+      url: http://prometheus-kube-prometheus-prometheus.warnet-logging:9090
+    - name: Loki
+      type: loki
+      url: http://loki-gateway.warnet-logging:80
+dashboardProviders:
+  dashboardproviders.yaml:
+    apiVersion: 1
+    providers:
+    - name: 'default'
+      orgId: 1
+      folder: ''
+      type: file
+      disableDeletion: false
+      editable: true
+      options:
+        path: /var/lib/grafana/dashboards/default
+extraVolumeMounts:
+  - name: grafana-dashboards-volume
+    mountPath: /var/lib/grafana/dashboards/default
+extraVolumes:
+  - name: grafana-dashboards-volume
+    configMap:
+      name: grafana-dashboards-config
+grafana.ini:
+  auth:
+    disable_login_form: true
+    disable_signout_menu: true
+  server:
+    # this is required to use Grafana behind a reverse proxy (caddy)
+    root_url: "%(protocol)s://%(domain)s:%(http_port)s/grafana/"
+  auth.anonymous:
+    enabled: true
+    org_name: Main Org.
+    org_role: Editor

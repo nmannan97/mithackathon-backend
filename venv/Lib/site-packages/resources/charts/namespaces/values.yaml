@@ -1,0 +1,46 @@
+users:
+  - name: warnet-user
+    roles:
+      - pod-viewer
+      - pod-manager
+roles:
+  - name: pod-viewer
+    rules:
+      - apiGroups: [""]
+        resources: ["pods", "services", "configmaps"]
+        verbs: ["get", "list", "watch"]
+      - apiGroups: [""]
+        resources: ["pods/log", "pods/exec", "pods/attach", "pods/portforward"]
+        verbs: ["get"]
+      - apiGroups: [""]
+        resources: ["secrets"]
+        verbs: ["get", "list"]
+      - apiGroups: [""]
+        resources: ["persistentvolumeclaims", "namespaces"]
+        verbs: ["get", "list"]
+      - apiGroups: [""]
+        resources: ["events", "pods/status"]
+        verbs: ["get"]
+  - name: pod-manager
+    rules:
+      - apiGroups: [""]
+        resources: ["pods", "services"]
+        verbs: ["get", "list", "watch", "create", "delete", "update"]
+      - apiGroups: [""]
+        resources: ["pods"]
+        verbs: ["get", "list", "watch", "create", "delete", "update", "patch"]
+      - apiGroups: [""]
+        resources: ["pods/log", "pods/exec", "pods/attach", "pods/portforward"]
+        verbs: ["get", "create"]
+      - apiGroups: [""]
+        resources: ["configmaps", "secrets", "serviceaccounts"]
+        verbs: ["get", "list", "create", "update", "watch"]
+      - apiGroups: ["rbac.authorization.k8s.io"]
+        resources: ["roles", "rolebindings"]
+        verbs: ["get", "list", "create", "update"]
+      - apiGroups: [""]
+        resources: ["persistentvolumeclaims", "namespaces"]
+        verbs: ["get", "list"]
+      - apiGroups: [""]
+        resources: ["events", "pods/status"]
+        verbs: ["get"]

@@ -1,0 +1,144 @@
+# Default values for bitcoincore.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+namespace: warnet
+
+restartPolicy: Never
+
+image:
+  repository: bitcoindevproject/bitcoin
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "27.0"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+podLabels: 
+  app: "warnet"
+  mission: "tank"
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+
+livenessProbe:
+  exec:
+    command:
+    - pidof
+    - bitcoind
+  failureThreshold: 12
+  initialDelaySeconds: 5
+  periodSeconds: 5
+  successThreshold: 1
+  timeoutSeconds: 10
+readinessProbe:
+  failureThreshold: 12
+  periodSeconds: 5
+  successThreshold: 1
+  timeoutSeconds: 10
+
+
+# Additional volumes on the output Deployment definition.
+volumes: []
+# - name: foo
+#   secret:
+#     secretName: mysecret
+#     optional: false
+
+# Additional volumeMounts on the output Deployment definition.
+volumeMounts: []
+# - name: foo
+#   mountPath: "/etc/foo"
+#   readOnly: true
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+collectLogs: false
+metricsExport: false
+prometheusMetricsPort: 9332
+
+# These are values that are propogated to the sub-charts (i.e. lightning nodes)
+global:
+  chain: regtest
+  regtest:
+    RPCPort: 18443
+    P2PPort: 18444
+  signet:
+    RPCPort: 38332
+    P2PPort: 38333
+  ZMQTxPort: 28333
+  ZMQBlockPort: 28332
+  rpcpassword: gn0cchi
+
+baseConfig: |
+  checkmempool=0
+  debuglogfile=debug.log
+  logips=1
+  logtimemicros=1
+  capturemessages=1
+  fallbackfee=0.00001000
+  listen=1
+  rpcuser=user
+  # rpcpassword MUST be set as a chart value
+  rpcallowip=0.0.0.0/0
+  rpcbind=0.0.0.0
+  rest=1
+  # rpcport and zmq endpoints are configured by chain in configmap.yaml
+
+config: ""
+
+defaultConfig: ""
+
+addnode: []
+
+loadSnapshot:
+  enabled: false
+  url: ""
+
+ln:
+  lnd: false

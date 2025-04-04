@@ -1,0 +1,3 @@
+[console_scripts]
+warcli = warnet.main:cli
+warnet = warnet.main:cli

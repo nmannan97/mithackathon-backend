@@ -1,0 +1,61 @@
+Metadata-Version: 2.4
+Name: warnet
+Version: 1.1.12
+Summary: Monitor and analyze the emergent behaviours of bitcoin networks
+License: MIT
+Project-URL: Homepage, https://warnet.dev
+Project-URL: GitHub, https://github.com/bitcoin-dev-project/warnet
+Project-URL: Pypi, https://pypi.org/project/warnet/
+Keywords: bitcoin,warnet
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: click==8.1.7
+Requires-Dist: docker==7.1.0
+Requires-Dist: flask==3.0.3
+Requires-Dist: inquirer==3.4.0
+Requires-Dist: kubernetes==30.1.0
+Requires-Dist: rich==13.7.1
+Requires-Dist: tabulate==0.9.0
+Requires-Dist: PyYAML==6.0.2
+Requires-Dist: pexpect==4.9.0
+Provides-Extra: build
+Requires-Dist: twine; extra == "build"
+Requires-Dist: build; extra == "build"
+Dynamic: license-file
+
+![Python Version from PEP 621 TOML](https://img.shields.io/python/required-version-toml?tomlFilePath=https://raw.githubusercontent.com/bitcoin-dev-project/warnet/main/pyproject.toml)
+# Warnet
+
+Monitor and analyze the emergent behaviors of Bitcoin networks.
+
+## Major Features
+
+* Launch a bitcoin network with a specified number of nodes connected to each other according to a network topology.
+* Run scenarios of network behavior across the network which can be programmed using the Bitcoin Core functional [test_framework language](https://github.com/bitcoin/bitcoin/tree/master/test/functional).
+* Collect and search data from nodes including log files and p2p messages.
+* Monitor and visualize performance data from Bitcoin nodes.
+* Connect to a large network running in a remote cluster, or a smaller network running locally.
+
+## Documentation
+
+- [Design](/DESIGN.md)
+- [Installation](/docs/install.md)
+- [CLI Commands](/docs/warnet.md)
+- [Network configuration with yaml files](/docs/config.md)
+- [Plugins](/docs/plugins.md)
+- [Scenarios](/docs/scenarios.md)
+- [Monitoring](/docs/logging_monitoring.md)
+- [Snapshots](/docs/snapshots.md)
+- [Connecting to local nodes outside the cluster](/docs/connecting-local-nodes.md)
+- [Scaling](/docs/scaling.md)
+- [Contributing](/docs/developer-notes.md)
+
+![warnet-art](https://raw.githubusercontent.com/bitcoin-dev-project/warnet/main/docs/machines.webp)

@@ -1,0 +1,60 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: warnet
+  name: pod-reader-exec
+rules:
+- apiGroups: [""]
+  resources: [pods]
+  verbs: [get, list, create, update, patch, delete]
+- apiGroups: [""]
+  resources: [services, endpoints]
+  verbs: [get, list, create, update, patch, delete]
+- apiGroups: [""]
+  resources: [pods/exec]
+  verbs: [create, get]
+- apiGroups: [""]
+  resources: [pods/log]  # Granting permission to access pod logs
+  verbs: [get]
+- apiGroups: [monitoring.coreos.com]
+  resources: [servicemonitors]
+  verbs: [get, list, create, update, patch, delete]
+- apiGroups: [apiextensions.k8s.io]
+  resources: [customresourcedefinitions]
+  verbs: [get, list]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: read-exec-pods
+  namespace: warnet
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: warnet
+roleRef:
+  kind: Role
+  name: pod-reader-exec
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: crd-viewer
+rules:
+- apiGroups: [apiextensions.k8s.io]
+  resources: [customresourcedefinitions]
+  verbs: [get, list, watch]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: crd-viewer-binding
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: warnet
+roleRef:
+  kind: ClusterRole
+  name: crd-viewer
+  apiGroup: rbac.authorization.k8s.io
