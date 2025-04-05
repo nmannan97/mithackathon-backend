@@ -99,10 +99,20 @@ def add_coin():
     name = data.get('name', '').strip()
     amount = data.get('amount')
 
+    db = get_coin_db()
+    cursor = db.execute('SELECT amount FROM coins')
+    rows = cursor.fetchall()
+    amounts = [row['amount'] for row in rows]  # Extract just the amount field
+    value = 0
+    for items in amounts:
+        value += int(items)
+
     if not name:
         return jsonify({'error': 'Name is required'}), 400
     if amount is None or not isinstance(amount, (int, float)):
         return jsonify({'error': 'Amount must be a number'}), 400
+    if amount > 100 or value>100:
+        return jsonify({'error': 'coin amount exceeds 100'}), 400
 
     db = get_coin_db()
 
