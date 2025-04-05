@@ -99,33 +99,36 @@ def add_coin():
     name = data.get('name', '').strip()
     amount = data.get('amount')
 
-    db = get_coin_db()
-    cursor = db.execute('SELECT amount FROM coins')
-    rows = cursor.fetchall()
-    amounts = [row['amount'] for row in rows]  # Extract just the amount field
-    value = 0
-    for items in amounts:
-        value += int(items)
-
     if not name:
         return jsonify({'error': 'Name is required'}), 400
     if amount is None or not isinstance(amount, (int, float)):
         return jsonify({'error': 'Amount must be a number'}), 400
-    if amount > 100 or value>100:
-        return jsonify({'error': 'coin amount exceeds 100'}), 400
 
     db = get_coin_db()
 
-    # Check if the coin name already exists
-    cursor = db.execute('SELECT 1 FROM coins WHERE name = ?', (name,))
-    if cursor.fetchone():
-        return jsonify({'error': f'Coin "{name}" already exists.'}), 409
+    # Check if coin with this name exists
+    cursor = db.execute('SELECT amount FROM coins WHERE name = ?', (name,))
+    existing = cursor.fetchone()
+    old_amount = existing['amount'] if existing else 0
 
-    # Insert the coin
-    db.execute('INSERT INTO coins (name, amount) VALUES (?, ?)', (name, amount))
+    # Get current total
+    total_cursor = db.execute('SELECT SUM(amount) as total FROM coins')
+    total_row = total_cursor.fetchone()
+    current_total = total_row['total'] or 0
+
+    # New total if we update this entry
+    new_total = current_total - old_amount + amount
+
+    if new_total > 100:
+        return jsonify({'error': 'Coin amount exceeds 100'}), 400
+
+    if existing:
+        db.execute('UPDATE coins SET amount = ? WHERE name = ?', (amount, name))
+    else:
+        db.execute('INSERT INTO coins (name, amount) VALUES (?, ?)', (name, amount))
     db.commit()
 
-    return jsonify({'message': f'Coin "{name}" with amount {amount} added.'})
+    return jsonify({'message': f'✅ person "{name}" with amount {amount} added or updated.'})
 
 @app.route('/coins', methods=['GET'])
 def get_coins():
